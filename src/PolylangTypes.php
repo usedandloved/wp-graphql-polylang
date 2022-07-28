@@ -18,7 +18,7 @@ class PolylangTypes
     {
         $language_codes = [];
 
-        foreach (pll_languages_list() as $lang) {
+        foreach (qtranxf_getSortedLanguages() as $lang) {
             $language_codes[strtoupper($lang)] = $lang;
         }
 

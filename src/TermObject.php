@@ -48,9 +48,11 @@ class TermObject
 
     function add_taxonomy_fields(\WP_Taxonomy $taxonomy)
     {
-        if (!pll_is_translated_taxonomy($taxonomy->name)) {
-            return;
-        }
+        // Skip test here because I think qtranslate-xt 
+        // Can only be allowed tor all taxonomies ATM.
+        // if (!true) {
+        //     return;
+        // }
 
         $type = ucfirst($taxonomy->graphql_single_name);
 

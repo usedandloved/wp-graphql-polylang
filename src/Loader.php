@@ -8,14 +8,14 @@ class Loader
 
     static function init()
     {
-        define('WPGRAPHQL_POLYLANG', true);
+        define('WPGRAPHQL_QTX', true);
         (new Loader())->bind_hooks();
     }
 
     function bind_hooks()
     {
-        add_filter('pll_model', [$this, '__filter_pll_model'], 10, 1);
-        add_filter('pll_context', [$this, '__filter_pll_context'], 10, 1);
+        // add_filter('pll_model', [$this, '__filter_pll_model'], 10, 1);
+        // add_filter('pll_context', [$this, '__filter_pll_context'], 10, 1);
         add_filter(
             'get_user_metadata',
             [$this, '__filter_get_user_metadata'],
@@ -48,23 +48,23 @@ class Loader
             return;
         }
 
-        if (!$this->pll_context_called) {
-            \http_response_code(500);
-            $msg =
-                'wp-graphql-polylang: You are using too old Polylang version. You must use one that implements pll_context filter https://github.com/polylang/polylang/commit/2203b9e16532797fa530f9b73024b53885d728ef';
-            error_log($msg);
-            die($msg);
-        }
+        // if (!$this->pll_context_called) {
+        //     \http_response_code(500);
+        //     $msg =
+        //         'wp-graphql-polylang: You are using too old Polylang version. You must use one that implements pll_context filter https://github.com/polylang/polylang/commit/2203b9e16532797fa530f9b73024b53885d728ef';
+        //     error_log($msg);
+        //     die($msg);
+        // }
 
         // ACF Pro and "ACF Options For Polylang" plugins are required for
         // options pages
         // https://wordpress.org/plugins/acf-options-for-polylang/
-        if (
-            defined('BEA_ACF_OPTIONS_FOR_POLYLANG_VERSION') &&
-            function_exists('acf_add_options_page')
-        ) {
-            OptionsPages::init();
-        }
+        // if (
+        //     defined('BEA_ACF_OPTIONS_FOR_POLYLANG_VERSION') &&
+        //     function_exists('acf_add_options_page')
+        // ) {
+        //     OptionsPages::init();
+        // }
 
         (new PolylangTypes())->init();
         (new PostObject())->init();
@@ -134,13 +134,13 @@ class Loader
             return false;
         }
 
-        if (!defined('POLYLANG_VERSION')) {
+        if (!defined('QTX_VERSION')) {
             return false;
         }
 
-        if (defined('GRAPHQL_POLYLANG_TESTS')) {
-            return true;
-        }
+        // if (defined('GRAPHQL_POLYLANG_TESTS')) {
+        //     return true;
+        // }
 
         return is_graphql_http_request();
     }

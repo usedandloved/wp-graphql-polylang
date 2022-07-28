@@ -74,7 +74,7 @@ class SanityTest extends PolylangUnitTestCase
 
     public function testPluginIsActivated()
     {
-        $this->assertTrue(defined('WPGRAPHQL_POLYLANG'));
+        $this->assertTrue(defined('WPGRAPHQL_QTX'));
     }
 
     public function testCanSetPostLanguage()

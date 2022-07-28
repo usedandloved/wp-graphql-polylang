@@ -26,8 +26,9 @@ class LanguageRootQueries
             ),
             'resolve' => function ($source, $args, $context, $info) {
                 $fields = $info->getFieldSelection();
-
-                // Oh the Polylang api is so nice here. Better ideas?
+                
+                global $q_config;
+                $langs = qtranxf_getSortedLanguages();
 
                 $languages = array_map(function ($code) {
                     return [
@@ -35,29 +36,24 @@ class LanguageRootQueries
                         'code' => $code,
                         'slug' => $code,
                     ];
-                }, pll_languages_list());
+                }, $langs);
 
-                if (isset($fields['name'])) {
+                if (isset($fields['name']) || isset($fields['locale'])) {
                     foreach (
-                        pll_languages_list(['fields' => 'name'])
-                        as $index => $name
+                        $langs as $index => $lang
                     ) {
-                        $languages[$index]['name'] = $name;
-                    }
-                }
-
-                if (isset($fields['locale'])) {
-                    foreach (
-                        pll_languages_list(['fields' => 'locale'])
-                        as $index => $locale
-                    ) {
-                        $languages[$index]['locale'] = $locale;
+                        if (isset($fields['name'])) {
+                            $languages[$index]['name'] = $q_config['language_name'][$lang];
+                        }
+                        if (isset($fields['locale'])) {
+                            $languages[$index]['locale'] = $q_config['locale'][$lang];
+                        }
                     }
                 }
 
                 if (isset($fields['homeUrl'])) {
                     foreach ($languages as &$language) {
-                        $language['homeUrl'] = pll_home_url($language['slug']);
+                        $language['homeUrl'] = qtranxf_convertURL( home_url(), $language['slug'] );
                     }
                 }
 
@@ -72,25 +68,28 @@ class LanguageRootQueries
                 $fields = $info->getFieldSelection();
                 $language = [];
 
+                global $q_config;
+                $lang = $q_config['default_language'];
+
                 // All these fields are build from the same data...
                 if (Helpers::uses_slug_based_field($fields)) {
-                    $language['code'] = pll_default_language('slug');
+                    $language['code'] = $lang;
                     $language['id'] = Relay::toGlobalId(
                         'Language',
-                        $language['code']
+                        $lang
                     );
-                    $language['slug'] = $language['code'];
+                    $language['slug'] = $lang;
                 }
 
                 if (isset($fields['name'])) {
-                    $language['name'] = pll_default_language('name');
+                    $language['name'] = $q_config['language_name'][$lang];
                 }
 
                 if (isset($fields['locale'])) {
-                    $language['locale'] = pll_default_language('locale');
+                    $language['locale'] = $q_config['locale'][$lang];
                 }
                 if (isset($fields['homeUrl'])) {
-                    $language['homeUrl'] = pll_home_url($language['slug']);
+                    $language['homeUrl'] = qtranxf_convertURL( home_url(), $lang );
                 }
 
                 return $language;

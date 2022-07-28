@@ -88,7 +88,13 @@ class PostObject
 
     function add_post_type_fields(\WP_Post_Type $post_type_object)
     {
-        if (!pll_is_translated_post_type($post_type_object->name)) {
+
+        require_once( QTRANSLATE_DIR . '/admin/qtx_admin_options.php' );
+        global $q_config;
+        qtranxf_admin_load_config();
+
+        $post_type_off = isset( $q_config['post_type_excluded'] ) && in_array( $post_type_object->name, $q_config['post_type_excluded'] );
+        if ($post_type_off) {
             return;
         }
 
